@@ -1,12 +1,3 @@
-Ниже — готовый финальный файл README.md, полностью оформленный, структурированный и дополненный блоком “In development / В разработке”.
-Текст адаптирован под GitHub, смартфоны и поддерживает многомодульную структуру.
-
-Можно сразу вставлять как содержимое README.md в репозитории WebKurierX.
-
-⸻
-
-README.md — WebKurierX
-
 # WebKurierX  
 Universal future-tech hub of the WebKurier ecosystem.  
 AI-clusters, neuromorphic systems, holography, AR/VR, quantum navigation and next-gen experimental technologies.
