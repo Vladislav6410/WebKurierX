@@ -1,111 +1,169 @@
-# WebKurierX  
-Universal future-tech hub of the WebKurier ecosystem.  
-AI-clusters, neuromorphic systems, holography, AR/VR, quantum navigation and next-gen experimental technologies.
+# WebKurierX — Future-Tech Research Hub of the WebKurier Ecosystem
+
+**WebKurierX** is the experimental, forward-looking R&D hub of the WebKurier ecosystem.  
+It hosts next-generation prototypes, early-stage modules, and high-complexity research areas (AI clusters, quantum experiments, neuromorphic compute, AR/VR/Holo, fusion-UI, robotics, and more).
+
+This repository contains **non-production**, **rapidly evolving**, and **high-risk** modules.  
+Stable versions graduate to WebKurierCore, PhoneCore, VehicleHub, Chain, or Security.
 
 ---
 
-## 📌 Purpose
+# 1. Role in the Ecosystem (Hierarchy Level 5)
 
-**WebKurierX** — спецпроект №10 экосистемы WebKurier.  
-Это универсальная платформа для будущих разработок, прорывных идей, R&D-лабораторий, holo-систем, AI-кластеров и экспериментальных технологий автономии.
+```text
+Level 0 — WebKurierHybrid (orchestrator)
+Level 1 — WebKurierCore (gateway & AI routing)
+Level 2 — WebKurierPhoneCore (communication hub)
+Level 2 — WebKurierVehicleHub (drone/vehicle/geodesy)
+Level 2 — WebKurierChain (blockchain)
+Level 2 — WebKurierSecurity (security)
+Level 3 — Mobile Apps (iOS/Android)
+Level 4 — WebKurierSite
+Level 5 — WebKurierX (THIS REPOSITORY — Future-Tech)
 
----
+Purpose:
+	•	Innovate
+	•	Prototype
+	•	Test
+	•	Break, redesign, and evolve the ecosystem
+	•	Provide a playground for future AI agents and hardware integrations
 
-# 🔥 Core Directions
+⸻
 
-## 1. WebKurierNext  
-Next-generation research: концепты, архитектуры, будущие модели, новые интерфейсы.
+2. Future Domains & Experiments
 
-## 2. WebKurierLabs  
-Центр R&D, прототипов и экспериментальных технологий WebKurier: сенсоры, автопилоты, edge-AI, глубокие тесты.
+2.1. Neuro / Brain-Inspired Modules
+	•	Neuromorphic AI (Akida, Loihi, custom kernels)
+	•	Real-time low-power inference
+	•	Sensor fusion accelerators
+	•	Brain-like pattern routing
 
-## 3. WebKurierVision  
-AR/VR/holo визуализация, 3D-интерфейсы, holo-сцены и будущие UI-системы.
+2.2. Quantum Lab
+	•	Quantum-inspired navigation concepts
+	•	QOP (Quantum Optical Processor) experiments
+	•	Entangled signal models
+	•	Future localization beyond GNSS
 
----
+2.3. Vision / Holo / VR / AR
+	•	Holographic UI prototypes
+	•	Spatial UX for 3D scenes
+	•	AR-assist for geodesy & drone navigation
+	•	VR cockpit for drones/robots
+	•	HoloShow & HoloSpace experimental engines
 
-# 🌐 Future Technologies
+2.4. Hyper & Fusion Engines
+	•	Fusion of AI+Geodesy+Robotics
+	•	Over-the-air drone coordination
+	•	Hyper-swarm modelling
+	•	Ultra-low latency mission controller prototypes
 
-## 4. WebKurierAI-Cluster  
-AI-кластер, обучение моделей, распределённые агенты, Jetson-inference, swarm-AI.
+2.5. Nova / Future Hardware Boards
+	•	Experimental Jetson/FPGA board integration
+	•	Multi-sensor rigs
+	•	Smart glasses interface bridge
+	•	Wearable compute processing
 
-## 5. WebKurierQuantum  
-Квантовая навигация без GPS, фотонные датчики, квантовые алгоритмы и сенсорные модели.
+⸻
 
-## 6. WebKurierNeuro  
-Нейроморфные вычисления, BrainChip Akida, ultra-low-power AI, автономные сенсорные системы.
-
----
-
-# 🎨 Holo / 3D / Visual Projects
-
-## 7. WebKurierHoloShow  
-Голография, 3D-кафе-реклама, AR-вывески, визуальные шоу и медиа-асеты.
-
-## 8. WebKurierHoloSpace  
-Создание 3D-сцен, моделей, AR-пространств, holo-инсталляций.
-
----
-
-# 🚀 High-Scale Innovation Tracks
-
-## 9. WebKurierHyper  
-Гипервычисления, ускоренные ядра, потоковые технологии и extreme-performance модули.
-
-## 10. WebKurierFusion  
-Слияние технологий: AI + Drone + Holo + Cloud + Security.  
-Универсальная интеграционная платформа.
-
-## 11. WebKurierNova  
-Платформа нового поколения: новые модели автономии, прорывные интерфейсы и системные технологии.
-
----
-
-# 🗂 Recommended Structure
+3. Repository Structure
 
 WebKurierX/
-├── next/
-├── labs/
-├── vision/
-├── ai-cluster/
-├── quantum/
-├── neuro/
-├── holoshow/
-├── holospace/
-├── hyper/
-├── fusion/
-├── nova/
-└── README.md
-
----
-
-# 🛠 In Development / В разработке
-
-- Holo-сцены для кафе-трейлера (WebKurierHoloShow)  
-- Quantum-сенсоры и навигация без GPS (WebKurierQuantum)  
-- Edge-AI модуль на BrainChip Akida (WebKurierNeuro)  
-- WebKurierAI-Cluster для распределённого обучения  
-- AR-интерфейсы и 3D-меню (WebKurierVision)  
-- Fusion-архитектура для объединения AI + Drone + Holo  
-- Hyper-ядро для интенсивных вычислений  
-- Nova-платформа (следующее поколение экспериментальных технологий)
-
----
-
-# 📞 Contact
-
-Telegram: **@WebKurierBot**  
-Author: **Vladyslav Hushchyn (Владислав Гущин)**  
-Germany, 2025
+├── next/                 # early pre-production ideas
+│   ├── README.md
+├── labs/                 # research submodules
+│   ├── neurolab/
+│   │   └── README.md
+│   ├── quantum/
+│   │   └── README.md
+│   ├── holoshow/
+│   │   └── README.md
+│   ├── holospace/
+│   │   └── README.md
+│   ├── hyper/
+│   │   └── README.md
+│   └── fusion/
+│       └── README.md
+├── vision/               # experimental image/video systems
+│   └── README.md
+├── ai-cluster/           # distributed compute tests
+│   └── README.md
+├── neuro/                # neuromorphic experiments
+│   └── README.md
+├── holoshow/             # holographic system prototypes
+│   └── README.md
+├── holospace/            # immersive space prototypes
+│   └── README.md
+├── hyper/                # hyper-control experiments
+│   └── README.md
+├── fusion/               # multi-domain fusion engine
+│   └── README.md
+└── docs/
+    ├── ROADMAP.md
+    └── SPEC_FUTURE_TECH.md
 
 
 ⸻
 
-Если хочешь — подготовлю:
+4. Integration Model
 
-✅ баннер SVG WebKurierX
-✅ структуру всех подпапок (пустые .md для старта)
-✅ QR-код
-✅ index.html для GitHub Pages
+Upstream → WebKurierHybrid
 
-Что из этого делаем следующим?
+Hybrid controls:
+	•	CI/CD of experimental builds
+	•	repository sync
+	•	security and sandboxing
+	•	graduate/promotion decisions
+
+Downstream ← Core / VehicleHub / PhoneCore
+
+Only mature modules are promoted.
+Examples:
+	•	Holo AR engine → Core UI
+	•	Quantum models → VehicleHub navigation
+	•	Neuromorphic audio → PhoneCore low-latency STT
+
+Security & Sandbox
+
+All experiments run in isolation:
+	•	No production data
+	•	No user tokens
+	•	Sandboxed clusters
+	•	SecurityAgent performs static/dynamic scanning
+
+⸻
+
+5. CI/CD
+
+Managed at Hybrid level:
+	•	CI pipelines for each sub-lab
+	•	Security scans
+	•	Documentation enforcement
+	•	Promotion rules (graduates → stable repos)
+	•	Automated tagging of prototypes
+
+⸻
+
+6. Agent Glossary (EN + RU)
+
+QuantumAgent — Квантовый агент
+NeuroAgent — Нейро-агент
+VisionAgent — Агент компьютерного зрения
+HoloAgent — Голографический агент
+FutureNavAgent — Агент будущей навигации
+ClusterAgent — Агент распределённых вычислений
+FusionAgent — Агент мульти-фьюжн систем
+NovaAgent — Агент экспериментального оборудования
+HyperAgent — Агент гипер-координации
+
+(Agents listed here are experimental and may never reach production.)
+
+⸻
+
+7. Governance
+
+WebKurierX — developed & supervised by
+Vladyslav Hushchyn (VladoExport) — Germany, EU.
+
+⸻
+
+
