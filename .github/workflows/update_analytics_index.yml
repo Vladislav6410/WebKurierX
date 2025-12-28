@@ -1,0 +1,31 @@
+name: 📊 Update Analytics Index
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "docs/analytics/*.md"
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run index builder
+        run: python scripts/build_analytics_index.py
+
+      - name: Commit and push index
+        run: |
+          git config --global user.name "WebKurierX Bot"
+          git config --global user.email "bot@webkurier.ai"
+          git add docs/analytics/INDEX.md
+          git commit -m "📊 Auto-update analytics index" || echo "No changes"
+          git push
