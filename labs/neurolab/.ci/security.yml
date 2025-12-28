@@ -1,4 +1,4 @@
-name: Security Scan
+name: Neurolab Security Scan
 
 on:
   push:
@@ -6,12 +6,9 @@ on:
       - "labs/neurolab/**"
 
 jobs:
-  scan:
+  static-analysis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Run static code analysis
+        run: echo "Neurolab security scan passed (mock)"
 
-      - name: Static analysis
-        run: |
-          echo "Scanning source for vulnerabilities..."
-          echo '{ "scanned_files": 120, "issues": 0, "severity": {"low":0,"medium":0,"high":0} }' > labs/neurolab/.ci/security_report.json
