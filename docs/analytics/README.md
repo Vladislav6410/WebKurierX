@@ -7,3 +7,4 @@ Each file corresponds to one day and contains the
 **Security-Trust Index** report from Hybrid+X Intelligence Layer.
 
 Example filenames:
+
