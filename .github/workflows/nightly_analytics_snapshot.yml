@@ -1,0 +1,44 @@
+name: 🌙 Nightly Analytics Snapshot
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # запускается каждый день в 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 🔧 Install dependencies
+        run: pip install requests pyyaml
+
+      - name: 🧠 Run Intelligence Layer fetch
+        env:
+          HYBRID_FEEDBACK_ENDPOINT: ${{ secrets.HYBRID_FEEDBACK_ENDPOINT }}
+          HYBRID_TOKEN: ${{ secrets.HYBRID_API_TOKEN }}
+        run: python scripts/pull_hybrid_feedback.py
+
+      - name: 🕓 Create nightly analytics snapshot
+        run: |
+          mkdir -p docs/analytics
+          SNAPSHOT="docs/analytics/$(date +'%Y-%m-%d').md"
+          cp docs/FEEDBACK_STATUS.md "$SNAPSHOT"
+          echo "✅ Saved snapshot to $SNAPSHOT"
+
+      - name: 📤 Commit and push snapshot
+        run: |
+          git config --global user.name "WebKurierX Bot"
+          git config --global user.email "bot@webkurier.ai"
+          git add docs/analytics/
+          git commit -m "📊 Nightly analytics snapshot $(date +'%Y-%m-%d')" || echo "No changes"
+          git push
