@@ -79,4 +79,4 @@ Neurolab генерирует артефакты, которые подхват�
 [8] GitHub - egorpushkin/neurolab: Visual environment for designing and training neural network models https://github.com/egorpushkin/neurolab
 [9] SAP Test Data Management using Data Scrambling https://www.youtube.com/watch?v=fRzUdyszuj0
 [10] Neurolab: Home https://neurolab.eu
-
+neurolab: initial commit with CI + README
