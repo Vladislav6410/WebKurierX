@@ -165,5 +165,5 @@ WebKurierX — developed & supervised by
 Vladyslav Hushchyn (VladoExport) — Germany, EU.
 
 ⸻
-
+ci: upgrade security telemetry workflow to v3
 
