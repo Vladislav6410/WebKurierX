@@ -1,4 +1,4 @@
-name: Security-Aware Smart Manifest (v3 + Mock API)
+name: 🛡️ Security-Aware Smart Manifest (SAPL v3)
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: 🧩 Checkout repository
+      - name: 📦 Checkout repository
         uses: actions/checkout@v4
 
       - name: 🐍 Set up Python
@@ -26,22 +26,22 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: 📦 Install dependencies
+      - name: 🔧 Install dependencies
         run: |
           pip install flask requests pyyaml
 
       - name: 🧠 Start mock SecurityAgent API
         run: |
           nohup python scripts/security_agent_mock.py > security_api.log 2>&1 &
-          echo "Waiting for SecurityAgent mock API to start..."
+          echo "🧩 Waiting for SecurityAgent mock API to start..."
           sleep 3
           curl -s http://localhost:8088/api/v1/security/neurolab || echo "Mock API running"
 
-      - name: 🛡️ Run Security-Aware Manifest Updater
+      - name: 🚀 Run Security-Aware Manifest Updater
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Running Security-Aware Promotion Layer (SAPL)..."
+          echo "Running SAPL: Security-Aware Promotion Layer..."
           python scripts/update_manifest_v3.py
 
       - name: 💾 Commit and push changes
@@ -50,11 +50,11 @@ jobs:
           git config --global user.email "bot@webkurier.ai"
           git add docs/AGENT_MANIFEST.md config.yml || true
           git commit -m "🤖 Security-Aware manifest auto-update [skip ci]" || echo "No manifest changes"
-          git push
+          git push || echo "No push needed"
 
-      - name: 🧾 Display summary
+      - name: 🧾 Summary
         if: always()
         run: |
-          echo "✅ Security-Aware Manifest workflow completed."
-          echo "🧩 AGENT_MANIFEST.md and config.yml updated if necessary."
-          echo "📊 Logs available in 'Actions' tab or security_api.log."
+          echo "✅ Security-Aware Smart Manifest completed."
+          echo "🧩 docs/AGENT_MANIFEST.md and config.yml updated if necessary."
+          echo "🛡️ SAPL layer executed using security_agent_mock.py."
