@@ -167,3 +167,4 @@ Vladyslav Hushchyn (VladoExport) — Germany, EU.
 ⸻
 ci: upgrade security telemetry workflow to v3
 docs: update README structure and CI reference
+ci: upgrade security telemetry workflow to v3
