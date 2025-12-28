@@ -1,4 +1,4 @@
-name: Auto Update Agent Manifest
+name: Smart Manifest + Auto Promotion
 
 on:
   push:
@@ -11,8 +11,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-manifest:
+  smart-update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,17 +26,22 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: |
-          pip install pyyaml
+        run: pip install pyyaml
 
-      - name: Run manifest updater
+      - name: Configure GitHub CLI
         run: |
-          python scripts/update_manifest.py
+          sudo apt install gh -y
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Run Smart Manifest Updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/update_manifest_v2.py
 
       - name: Commit and push changes
         run: |
           git config --global user.name "WebKurierX Bot"
           git config --global user.email "bot@webkurier.ai"
           git add docs/AGENT_MANIFEST.md config.yml
-          git commit -m "🤖 Auto-update manifest [skip ci]" || echo "No changes"
+          git commit -m "🤖 Smart manifest auto-update [skip ci]" || echo "No changes"
           git push
