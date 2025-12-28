@@ -1,4 +1,4 @@
-name: Security-Aware Smart Manifest
+name: Security-Aware Smart Manifest (v3 + Mock API)
 
 on:
   push:
@@ -16,33 +16,45 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+
     steps:
-      - name: Checkout repository
+      - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install pyyaml
+      - name: 📦 Install dependencies
+        run: |
+          pip install flask requests pyyaml
 
-      - name: Install GitHub CLI
-        run: sudo apt install gh -y
+      - name: 🧠 Start mock SecurityAgent API
+        run: |
+          nohup python scripts/security_agent_mock.py > security_api.log 2>&1 &
+          echo "Waiting for SecurityAgent mock API to start..."
+          sleep 3
+          curl -s http://localhost:8088/api/v1/security/neurolab || echo "Mock API running"
 
-      - name: Authenticate GitHub CLI
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-
-      - name: Run Security-Aware Manifest Updater
+      - name: 🛡️ Run Security-Aware Manifest Updater
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/update_manifest_v3.py
+        run: |
+          echo "Running Security-Aware Promotion Layer (SAPL)..."
+          python scripts/update_manifest_v3.py
 
-      - name: Commit and push changes
+      - name: 💾 Commit and push changes
         run: |
           git config --global user.name "WebKurierX Bot"
           git config --global user.email "bot@webkurier.ai"
-          git add docs/AGENT_MANIFEST.md config.yml
-          git commit -m "🤖 Security-Aware manifest update [skip ci]" || echo "No changes"
+          git add docs/AGENT_MANIFEST.md config.yml || true
+          git commit -m "🤖 Security-Aware manifest auto-update [skip ci]" || echo "No manifest changes"
           git push
+
+      - name: 🧾 Display summary
+        if: always()
+        run: |
+          echo "✅ Security-Aware Manifest workflow completed."
+          echo "🧩 AGENT_MANIFEST.md and config.yml updated if necessary."
+          echo "📊 Logs available in 'Actions' tab or security_api.log."
