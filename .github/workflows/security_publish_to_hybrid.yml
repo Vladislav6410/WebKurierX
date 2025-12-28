@@ -1,4 +1,4 @@
-name: Security Telemetry → Hybrid (Mock POST)
+name: 🔐 Security Telemetry → Hybrid (v2 | Auto Summary + Error Handling)
 
 on:
   workflow_dispatch:
@@ -12,52 +12,83 @@ on:
 jobs:
   publish-security-telemetry:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
-      - name: Checkout repository
+      - name: 📦 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: 🔧 Install dependencies
         run: pip install requests pyyaml
 
-      - name: Publish security reports to Hybrid mock API
+      - name: 🚀 Publish security reports to Hybrid mock API
         env:
           HYBRID_ENDPOINT: ${{ secrets.HYBRID_SECURITY_ENDPOINT }}
           HYBRID_TOKEN: ${{ secrets.HYBRID_API_TOKEN }}
         run: |
-          echo "Scanning labs for security reports..."
+          echo "Scanning for security reports in labs..."
           python - <<'PYCODE'
-import json, os, requests, pathlib
+import json, os, requests, pathlib, datetime
 
 endpoint = os.getenv("HYBRID_ENDPOINT", "https://hybrid-mock.webkurier/api/v1/security/report")
 token = os.getenv("HYBRID_TOKEN", "mock-token")
 
 headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-
 reports = list(pathlib.Path("labs").rglob("security_report.json"))
+summary = {"sent": 0, "failed": 0, "total": len(reports)}
+
 if not reports:
-    print("No security reports found.")
+    print("❌ No security reports found in labs/.ci/")
     raise SystemExit(0)
 
 for path in reports:
-    lab = path.parts[1]
+    lab = path.parts[1] if len(path.parts) > 1 else "unknown"
     with open(path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            print(f"⚠️ Invalid JSON in {path}")
+            summary["failed"] += 1
+            continue
+
     payload = {
         "lab": lab,
         "repository": "WebKurierX",
-        "timestamp": data.get("timestamp"),
+        "timestamp": data.get("timestamp", datetime.datetime.utcnow().isoformat()),
         "issues": data.get("issues", 0),
         "severity": data.get("severity", {}),
-        "source": str(path),
+        "risk_score": data.get("risk_score", 0.0),
+        "source_path": str(path),
     }
+
     try:
-        r = requests.post(endpoint, headers=headers, json=payload, timeout=5)
-        print(f"→ Sent {lab}: status={r.status_code}")
+        r = requests.post(endpoint, headers=headers, json=payload, timeout=10)
+        if r.status_code == 200:
+            print(f"✅ Sent {lab}: status={r.status_code}")
+            summary["sent"] += 1
+        else:
+            print(f"⚠️ {lab}: unexpected status {r.status_code}")
+            summary["failed"] += 1
     except Exception as e:
-        print(f"⚠️ Failed to send {lab}: {e}")
+        print(f"❌ Failed to send {lab}: {e}")
+        summary["failed"] += 1
+
+print("\n📊 Security Telemetry Summary:")
+print(json.dumps(summary, indent=2, ensure_ascii=False))
+if summary["failed"]:
+    raise SystemExit(f"One or more telemetry sends failed ({summary['failed']}).")
 PYCODE
+
+      - name: 🧾 Workflow summary
+        if: always()
+        run: |
+          echo "✅ Security Telemetry → Hybrid process complete."
+          echo "📦 Reports scanned and transmitted to Hybrid mock endpoint."
+          echo "💡 Check 'Actions' logs for per-lab POST status."
