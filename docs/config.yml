@@ -1,0 +1,84 @@
+# WebKurierX — Global Configuration File
+
+meta:
+  version: "1.0"
+  owner: "Vladyslav Hushchyn (VladoExport)"
+  managed_by: "WebKurierHybrid"
+  sandbox_mode: true
+  last_update: "2025-12-28"
+
+labs:
+  neurolab:
+    agent: "NeuroAgent"
+    maturity: 1
+    description: "Нейроморфные и сенсорные фьюжн-системы"
+    upstream_target: "PhoneCore"
+    ci_enabled: true
+
+  quantum:
+    agent: "QuantumAgent"
+    maturity: 1
+    description: "Квантовые навигационные и вычислительные модели"
+    upstream_target: "VehicleHub"
+    ci_enabled: true
+
+  holoshow:
+    agent: "HoloAgent"
+    maturity: 2
+    description: "Голографические интерфейсы и 3D UI прототипы"
+    upstream_target: "Core"
+    ci_enabled: true
+
+  holospace:
+    agent: "HoloAgent"
+    maturity: 1
+    description: "Пространственные UX и VR/AR взаимодействие"
+    upstream_target: "Core"
+    ci_enabled: true
+
+  fusion:
+    agent: "FusionAgent"
+    maturity: 1
+    description: "Фьюжн систем разных доменов (нейро, визия, геодезия)"
+    upstream_target: "Hybrid"
+    ci_enabled: true
+
+  hyper:
+    agent: "HyperAgent"
+    maturity: 0
+    description: "Гипер-координация дронов и миссий"
+    upstream_target: "VehicleHub"
+    ci_enabled: true
+
+  ai-cluster:
+    agent: "ClusterAgent"
+    maturity: 2
+    description: "Распределённые вычисления и кластеризация sandbox-сред"
+    upstream_target: "Hybrid"
+    ci_enabled: true
+
+  vision:
+    agent: "VisionAgent"
+    maturity: 1
+    description: "Компьютерное зрение и визуальная аналитика"
+    upstream_target: "Core"
+    ci_enabled: true
+
+  nova:
+    agent: "NovaAgent"
+    maturity: 0
+    description: "Экспериментальное оборудование и носимая электроника"
+    upstream_target: "Hybrid"
+    ci_enabled: false
+
+ci_pipeline:
+  enforced: true
+  stages:
+    - build
+    - test
+    - security_scan
+    - documentation_check
+    - promotion
+  promotion_rules:
+    require_approval_from: "WebKurierHybrid"
+    min_maturity: 3
