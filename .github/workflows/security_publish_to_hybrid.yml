@@ -1,4 +1,4 @@
-name: 🔐 Security Telemetry → Hybrid (v2)
+name: 🔐 Security Telemetry → Hybrid (v3)
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
           python - <<'PYCODE'
 import json, os, requests, pathlib, datetime
 
-endpoint = os.getenv("HYBRID_ENDPOINT", "http://localhost:9090/api/v1/security/report")
+endpoint = os.getenv("HYBRID_ENDPOINT", "http://127.0.0.1:9090/api/v1/security/report")
 token = os.getenv("HYBRID_TOKEN", "mock-token")
 headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
@@ -83,6 +83,8 @@ print("\n📊 Security Telemetry Summary:")
 print(json.dumps(summary, indent=2, ensure_ascii=False))
 if summary["failed"]:
     raise SystemExit(f"⚠️ One or more telemetry sends failed ({summary['failed']}).")
+else:
+    print("✅ All telemetry reports sent successfully!")
 PYCODE
 
       - name: 🧾 Summary
