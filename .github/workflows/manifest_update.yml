@@ -1,0 +1,39 @@
+name: Auto Update Agent Manifest
+
+on:
+  push:
+    paths:
+      - "labs/**"
+      - "config.yml"
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Run manifest updater
+        run: |
+          python scripts/update_manifest.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "WebKurierX Bot"
+          git config --global user.email "bot@webkurier.ai"
+          git add docs/AGENT_MANIFEST.md config.yml
+          git commit -m "🤖 Auto-update manifest [skip ci]" || echo "No changes"
+          git push
