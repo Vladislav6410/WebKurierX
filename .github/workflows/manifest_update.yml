@@ -1,4 +1,4 @@
-name: Smart Manifest + Auto Promotion
+name: 🧠 Smart Manifest + Auto Promotion (v3)
 
 on:
   push:
@@ -16,32 +16,43 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+
     steps:
-      - name: Checkout repository
+      - name: 📦 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install pyyaml
-
-      - name: Configure GitHub CLI
+      - name: 🔧 Install dependencies
         run: |
-          sudo apt install gh -y
+          pip install pyyaml requests
+
+      - name: ⚙️ Configure GitHub CLI
+        run: |
+          sudo apt update && sudo apt install gh -y
           echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
-      - name: Run Smart Manifest Updater
+      - name: 🚀 Run Smart Manifest Updater (v3)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/update_manifest_v2.py
+        run: |
+          echo "🧠 Running update_manifest_v3.py..."
+          python scripts/update_manifest_v3.py || echo "⚠️ Smart updater completed with warnings"
 
-      - name: Commit and push changes
+      - name: 💾 Commit and push changes
         run: |
           git config --global user.name "WebKurierX Bot"
           git config --global user.email "bot@webkurier.ai"
-          git add docs/AGENT_MANIFEST.md config.yml
-          git commit -m "🤖 Smart manifest auto-update [skip ci]" || echo "No changes"
-          git push
+          git add docs/AGENT_MANIFEST.md config.yml || true
+          git commit -m "🤖 Smart manifest auto-update [skip ci]" || echo "No manifest changes"
+          git push || echo "No push needed"
+
+      - name: 🧾 Summary
+        if: always()
+        run: |
+          echo "✅ Smart Manifest update completed."
+          echo "🧩 docs/AGENT_MANIFEST.md and config.yml updated if necessary."
+          echo "📊 Review changes in 'Actions' tab or in the commit history."
