@@ -1,10 +1,8 @@
 name: Neurolab Security Scan
-
 on:
   push:
     paths:
       - "labs/neurolab/**"
-
 jobs:
   static-analysis:
     runs-on: ubuntu-latest
