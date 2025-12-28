@@ -1,0 +1,63 @@
+name: Security Telemetry → Hybrid (Mock POST)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "labs/**/.ci/security_report.json"
+    branches:
+      - main
+      - dev
+
+jobs:
+  publish-security-telemetry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests pyyaml
+
+      - name: Publish security reports to Hybrid mock API
+        env:
+          HYBRID_ENDPOINT: ${{ secrets.HYBRID_SECURITY_ENDPOINT }}
+          HYBRID_TOKEN: ${{ secrets.HYBRID_API_TOKEN }}
+        run: |
+          echo "Scanning labs for security reports..."
+          python - <<'PYCODE'
+import json, os, requests, pathlib
+
+endpoint = os.getenv("HYBRID_ENDPOINT", "https://hybrid-mock.webkurier/api/v1/security/report")
+token = os.getenv("HYBRID_TOKEN", "mock-token")
+
+headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+reports = list(pathlib.Path("labs").rglob("security_report.json"))
+if not reports:
+    print("No security reports found.")
+    raise SystemExit(0)
+
+for path in reports:
+    lab = path.parts[1]
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    payload = {
+        "lab": lab,
+        "repository": "WebKurierX",
+        "timestamp": data.get("timestamp"),
+        "issues": data.get("issues", 0),
+        "severity": data.get("severity", {}),
+        "source": str(path),
+    }
+    try:
+        r = requests.post(endpoint, headers=headers, json=payload, timeout=5)
+        print(f"→ Sent {lab}: status={r.status_code}")
+    except Exception as e:
+        print(f"⚠️ Failed to send {lab}: {e}")
+PYCODE
