@@ -5,12 +5,12 @@ import pathlib
 import json
 import re
 
-# 🧩 Конфигурация
+# 🌐 Конфигурация
 endpoint = os.getenv("HYBRID_FEEDBACK_ENDPOINT", "http://localhost:9090/api/v1/hybrid/feedback")
 token = os.getenv("HYBRID_TOKEN", "mock-token")
 headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
-# 🗂 Пути
+# 📁 Пути
 docs_path = pathlib.Path("docs/FEEDBACK_STATUS.md")
 logs_dir = pathlib.Path("logs")
 logs_dir.mkdir(parents=True, exist_ok=True)
@@ -33,64 +33,77 @@ timestamp = datetime.datetime.utcnow().isoformat() + "Z"
 labs = data.get("labs", [])
 summary = data.get("summary", {})
 
-# 🧠 Считываем предыдущие trust_score из логов
-previous_scores = {}
+# 🧠 Извлечение предыдущих trust и risk из логов
+previous_trust = {}
+previous_risk = {}
 if log_file.exists():
     try:
-        content = log_file.read_text(encoding="utf-8")
-        matches = re.findall(r"- (\w+): trust=([0-9.]+)", content)
-        for lab, score in matches[-10:]:  # анализируем последние 10 записей
-            previous_scores[lab] = float(score)
+        text = log_file.read_text(encoding="utf-8")
+        for match in re.findall(r"- (\w+): trust=([0-9.]+), risk=([0-9.]+)", text):
+            lab, trust, risk = match
+            previous_trust[lab] = float(trust)
+            previous_risk[lab] = float(risk)
     except Exception:
         pass
 
-# 🧾 Логирование новой сессии
+# 🧾 Добавляем в лог новую запись
 with log_file.open("a", encoding="utf-8") as lf:
     lf.write(f"\n[{timestamp}] Feedback sync\n")
     for lab in labs:
+        trust = lab.get("trust_score", 0.0)
+        risk = lab.get("risk_score", 0.0)
         lf.write(
-            f"  - {lab.get('name')}: trust={lab.get('trust_score', 0):.2f}, "
+            f"  - {lab.get('name')}: trust={trust:.3f}, risk={risk:.3f}, "
             f"status={lab.get('status')}, ready={lab.get('promotion_ready')}\n"
         )
     lf.write(
-        f"  Summary: overall_trust={summary.get('overall_trust_index', 0):.2f}, "
+        f"  Summary: overall_trust={summary.get('overall_trust_index', 0):.3f}, "
         f"eligible={summary.get('eligible_for_promotion', 0)} / "
         f"total={summary.get('total_labs', len(labs))}\n"
     )
 
 print(f"🪵 Log updated → {log_file}")
 
-# 📊 Генерация Markdown таблицы с сравнением trust_score
-table_header = "| 🧪 Lab | 🔒 Trust Score | 📊 Status | 🚀 Promotion Ready | 🧭 Change | 📝 Notes |\n"
-table_header += "|:------|:---------------:|:----------|:------------------:|:---------:|:---------|\n"
+# 📊 Формирование Markdown с анализом trust + risk
+table_header = (
+    "| 🧪 Lab | 🔒 Trust | ⚠️ Risk | 🧭 Trust Δ | ⚡ Risk Δ | 🧮 SecTrust Index | 📊 Status | 🚀 Promotion | 📝 Notes |\n"
+    "|:------|:---------:|:-------:|:----------:|:----------:|:----------------:|:----------|:-------------:|:---------|\n"
+)
 
 rows = []
 for lab in labs:
     name = lab.get("name")
-    current_score = lab.get("trust_score", 0)
-    prev_score = previous_scores.get(name)
-    delta = None
-    trend = ""
+    trust = lab.get("trust_score", 0.0)
+    risk = lab.get("risk_score", 0.0)
+    prev_t = previous_trust.get(name)
+    prev_r = previous_risk.get(name)
+    trust_delta = trust - prev_t if prev_t is not None else 0
+    risk_delta = risk - prev_r if prev_r is not None else 0
+    sec_trust_index = round(trust * (1 - risk), 3)
 
-    if prev_score is not None:
-        delta = round(current_score - prev_score, 3)
-        if delta < -0.02:
-            trend = f"⚠️ ↓{abs(delta):.2f}"
-        elif delta > 0.02:
-            trend = f"🟢 ↑{delta:.2f}"
-        else:
-            trend = "➖ stable"
-    else:
-        trend = "🆕 new"
+    trust_trend = "🆕" if prev_t is None else (
+        f"🟢 ↑{trust_delta:.2f}" if trust_delta > 0.02 else (
+            f"⚠️ ↓{abs(trust_delta):.2f}" if trust_delta < -0.02 else "➖ stable"
+        )
+    )
+    risk_trend = "🆕" if prev_r is None else (
+        f"⚠️ ↑{risk_delta:.2f}" if risk_delta > 0.02 else (
+            f"🟢 ↓{abs(risk_delta):.2f}" if risk_delta < -0.02 else "➖ stable"
+        )
+    )
 
     rows.append(
         f"| {name} "
-        f"| {current_score:.2f} "
+        f"| {trust:.2f} "
+        f"| {risk:.2f} "
+        f"| {trust_trend} "
+        f"| {risk_trend} "
+        f"| {sec_trust_index:.2f} "
         f"| {'✅ validated' if lab.get('status') == 'validated' else '🕓 ' + lab.get('status', 'unknown')} "
         f"| {'✅ yes' if lab.get('promotion_ready') else '❌ no'} "
-        f"| {trend} "
         f"| {lab.get('notes', '').replace('|', '/')} |"
     )
+
 table = "\n".join(rows)
 
 summary_table = (
@@ -98,32 +111,34 @@ summary_table = (
     "|:--------|:------|\n"
     f"| Total Labs | {summary.get('total_labs', len(labs))} |\n"
     f"| Eligible for Promotion | {summary.get('eligible_for_promotion', 0)} |\n"
-    f"| Overall Trust Index | {summary.get('overall_trust_index', 0):.2f} |\n"
+    f"| Overall Trust Index | {summary.get('overall_trust_index', 0):.3f} |\n"
 )
 
 # 🧱 Markdown отчёт
-content = f"""# 🔁 Hybrid Feedback Status
+content = f"""# 🧠 Hybrid+X Intelligence Feedback Report
 
 _Last sync: **{timestamp} UTC**_
 
 ---
 
-## 🧠 Overview
+## Overview
 
-This file is automatically generated by  
-**Hybrid Feedback Listener (Enterprise v2)** — with trust trend analysis and promotion readiness.
+This dashboard merges **trust** and **risk** analytics from Hybrid feedback,
+producing a combined **Security-Trust Index (STI)** for each lab.
 
 | Field | Description |
 |:------|:-------------|
-| `trust_score` | Numerical trust index (0–1.0) |
-| `status` | Lab validation stage |
-| `promotion_ready` | Indicates if lab can move up from sandbox |
-| `change` | Trust delta since last sync |
-| `notes` | Remarks from Hybrid feedback pipeline |
+| `Trust` | Reliability and validation consistency |
+| `Risk` | Security vulnerability score (0–1) |
+| `Trust Δ` | Change in trust since last feedback |
+| `Risk Δ` | Change in risk level |
+| `SecTrust Index` | (trust × (1 - risk)) — combined metric |
+| `Promotion` | Eligibility for graduation to production |
+| `Notes` | Feedback from Hybrid |
 
 ---
 
-## 🧩 Latest Feedback Snapshot
+## 🧩 Latest Hybrid+X Feedback
 
 {table_header}{table}
 
@@ -136,17 +151,13 @@ This file is automatically generated by
 ---
 
 ### 🧾 Historical Log Reference
-See detailed trust history at:  
+See trust & risk evolution in:
 `logs/hybrid_feedback.log`
 
 ---
 
-### 🧩 Next Update
-Synced every **15 minutes** or on manual trigger via  
-**Actions → 🔁 Hybrid Feedback Listener (v1)**
-
-_Last updated automatically by `scripts/pull_hybrid_feedback.py`_
+_Last updated automatically by `scripts/pull_hybrid_feedback.py (Enterprise+ Intelligence Layer)`_
 """
 
 docs_path.write_text(content, encoding="utf-8")
-print(f"✅ Markdown dashboard updated with trust delta → {docs_path}")
+print(f"✅ Intelligence Layer report updated → {docs_path}")
