@@ -1,0 +1,12 @@
+security:
+  scan_type: static
+  tools:
+    - Bandit
+    - Safety
+  rules:
+    allow_network: false
+    require_code_sign: true
+    audit_dependencies: true
+  promotion_block_if:
+    high_issues: > 0
+    risk_score: > 0.3
