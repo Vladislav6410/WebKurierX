@@ -17,4 +17,4 @@ To explore quantum-inspired models for navigation, entangled signal simulation, 
 
 **CI/CD Notes:**
 All experiments sandboxed.
-Security layer enforced via SAPL.
+Security layer enforced via SAPL.quantum: add initial QuantumLab with CI and security setup
