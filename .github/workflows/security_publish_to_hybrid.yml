@@ -1,20 +1,19 @@
-name: 🔐 Security Telemetry → Hybrid (v2 | Auto Summary + Error Handling)
+name: 🔐 Security Telemetry → Hybrid (v2)
 
 on:
-  workflow_dispatch:
   push:
     paths:
       - "labs/**/.ci/security_report.json"
     branches:
       - main
       - dev
+  workflow_dispatch:
 
 jobs:
   publish-security-telemetry:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
 
     steps:
       - name: 📦 Checkout repository
@@ -33,19 +32,19 @@ jobs:
           HYBRID_ENDPOINT: ${{ secrets.HYBRID_SECURITY_ENDPOINT }}
           HYBRID_TOKEN: ${{ secrets.HYBRID_API_TOKEN }}
         run: |
-          echo "Scanning for security reports in labs..."
+          echo "🔎 Searching for security reports..."
           python - <<'PYCODE'
 import json, os, requests, pathlib, datetime
 
-endpoint = os.getenv("HYBRID_ENDPOINT", "https://hybrid-mock.webkurier/api/v1/security/report")
+endpoint = os.getenv("HYBRID_ENDPOINT", "http://localhost:9090/api/v1/security/report")
 token = os.getenv("HYBRID_TOKEN", "mock-token")
-
 headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
 reports = list(pathlib.Path("labs").rglob("security_report.json"))
 summary = {"sent": 0, "failed": 0, "total": len(reports)}
 
 if not reports:
-    print("❌ No security reports found in labs/.ci/")
+    print("❌ No security reports found.")
     raise SystemExit(0)
 
 for path in reports:
@@ -83,12 +82,12 @@ for path in reports:
 print("\n📊 Security Telemetry Summary:")
 print(json.dumps(summary, indent=2, ensure_ascii=False))
 if summary["failed"]:
-    raise SystemExit(f"One or more telemetry sends failed ({summary['failed']}).")
+    raise SystemExit(f"⚠️ One or more telemetry sends failed ({summary['failed']}).")
 PYCODE
 
-      - name: 🧾 Workflow summary
+      - name: 🧾 Summary
         if: always()
         run: |
-          echo "✅ Security Telemetry → Hybrid process complete."
-          echo "📦 Reports scanned and transmitted to Hybrid mock endpoint."
-          echo "💡 Check 'Actions' logs for per-lab POST status."
+          echo "✅ Security telemetry transfer complete."
+          echo "📦 Reports transmitted to Hybrid mock endpoint."
+          echo "💡 Check 'Actions' logs for details per lab."
