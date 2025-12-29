@@ -2,14 +2,15 @@ name: 🔁 Hybrid Feedback Listener (v1)
 
 on:
   schedule:
-    - cron: "*/15 * * * *"  # проверка каждые 15 минут
-  workflow_dispatch:        # ручной запуск
+    - cron: "*/15 * * * *"  # ⏱ Проверка каждые 15 минут
+  workflow_dispatch:        # Ручной запуск
 
 jobs:
   fetch-hybrid-feedback:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: 📦 Checkout repository
         uses: actions/checkout@v4
@@ -20,20 +21,21 @@ jobs:
           python-version: "3.11"
 
       - name: 🔧 Install dependencies
-        run: pip install requests pyyaml
+        run: |
+          pip install requests pyyaml
 
-      - name: 🔁 Pull feedback data from Hybrid
+      - name: 🛰 Pull feedback data from Hybrid
         env:
           HYBRID_FEEDBACK_ENDPOINT: ${{ secrets.HYBRID_FEEDBACK_ENDPOINT }}
-          HYBRID_TOKEN: ${{ secrets.HYBRID_API_TOKEN }}
+          HYBRID_TOKEN: ${{ secrets.HYBRID_TOKEN }}
         run: |
           echo "📡 Fetching Hybrid feedback..."
           python scripts/pull_hybrid_feedback.py
 
-      - name: 🧾 Commit feedback summary
+      - name: 💾 Commit feedback summary + logs
         run: |
           git config --global user.name "WebKurierX Bot"
           git config --global user.email "bot@webkurier.ai"
-          git add docs/FEEDBACK_STATUS.md || echo "No feedback updates"
-          git commit -m "🔁 sync: update Hybrid feedback summary" || echo "No new feedback"
+          git add docs/FEEDBACK_STATUS.md logs/ || echo "No feedback updates"
+          git commit -m "🔁 sync: update Hybrid feedback summary + logs" || echo "No new feedback"
           git push
