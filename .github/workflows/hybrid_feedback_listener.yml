@@ -1,9 +1,7 @@
 name: 🔁 Hybrid Feedback Listener (v1)
 
 on:
-  schedule:
-    - cron: "*/15 * * * *"  # ⏱ Проверка каждые 15 минут
-  workflow_dispatch:        # Ручной запуск
+  workflow_dispatch:        # Ручной запуск (без schedule)
 
 jobs:
   fetch-hybrid-feedback:
