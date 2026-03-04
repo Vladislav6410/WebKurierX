@@ -1,0 +1,18 @@
+{
+  "log_file": "/opt/wktools/logs/wkagent.log",
+  "report_dir": "/opt/wktools/logs/reports",
+  "workspace": "/opt/wktools/workspace",
+  "secrets_file": "/opt/wktools/conf/secrets.env",
+
+  "checks": {
+    "git_status_clean": true,
+    "required_files": [".gitignore", "README.md"],
+    "forbidden_patterns": ["sk-", "OPENAI_API_KEY=", "CODEX_API_KEY="]
+  },
+
+  "commands": {
+    "python_lint": "python3 -m compileall .",
+    "node_lint": "npm -s test",
+    "tests": "pytest -q"
+  }
+}
