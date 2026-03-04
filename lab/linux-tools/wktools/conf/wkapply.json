@@ -1,0 +1,7 @@
+{
+  "log_file": "/opt/wktools/logs/wkapply.log",
+  "workspace": "/opt/wktools/workspace",
+  "snapshots_dir": "/opt/wktools/snapshots",
+  "archives_dir": "/opt/wktools/archives",
+  "default_pack_after_hours": 24
+}
