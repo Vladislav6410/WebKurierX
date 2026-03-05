@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# wk — natural prompt -> Codex CLI (edits inside current repo)
+# Requires: codex CLI installed + CODEX_API_KEY in /opt/wktools/conf/secrets.env
+
+python3 /opt/wktools/lib/wk.py "$@"
