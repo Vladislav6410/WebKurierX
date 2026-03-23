@@ -2,22 +2,7 @@
 
 WebKurierX is the experimental Linux tools lab of the WebKurier ecosystem.
 
-This repository is dedicated to building and testing local terminal agents.
-
-WebKurierCore/
-└── engine/
-    └── agents/
-        └── engineer/
-            ├── engineer-agent.js
-            ├── engineer-config.json
-            ├── prompts/
-            │   └── engineer-system.prompt.txt
-            ├── ui/
-            │   ├── engineer-core.html
-            │   └── engineer-ui.js
-            ├── api/
-            │   └── engineer-api.js
-            └── README.md
+This repository is dedicated to building and testing local terminal 
 
 ## Current focus
 
