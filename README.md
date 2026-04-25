@@ -1,11 +1,3 @@
-ФАЙЛ 1 из 14
-Папка / файл:
-
-README.md
-
-
-Код:
-
 # WKAgent — WebKurier AI Engineer
 
 Автоматическая генерация кода, анализ и исправление репозитория через ИИ.
@@ -180,15 +172,4 @@ git add -A && git commit -m "fix: wkagent" && git push
 Эти файлы нельзя коммитить (уже в .gitignore):
 	∙	secrets.env
 	∙	workspace/
-	∙	logs/
-
-
-Commit:
-
-
-add: README.md — full structure + all AI engines
-
-
----
-
-Пишешь **ок** — даю файл 2.​​​​​​​​​​​​​​​​
+	∙	
