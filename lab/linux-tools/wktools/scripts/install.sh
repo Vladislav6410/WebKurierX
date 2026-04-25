@@ -23,7 +23,7 @@ fi
 
 chmod +x /opt/wktools/bin/*
 
-for tool in wk wkdoc wksetup wkagent; do
+for tool in wk wkdoc wksetup wkagent wkapply; do
   if [[ -f /opt/wktools/bin/$tool ]]; then
     sudo ln -sf /opt/wktools/bin/$tool /usr/local/bin/$tool
     echo "  ✅ /usr/local/bin/$tool"
@@ -32,5 +32,8 @@ done
 
 echo ""
 echo "✅ wktools установлен!"
-echo "  wksetup key       # добавить ключ"
-echo "  wksetup status    # проверить"
+echo ""
+echo "  wksetup key            # добавить ключи"
+echo "  wksetup status         # проверить"
+echo "  wkagent check --repo . # первый анализ"
+
