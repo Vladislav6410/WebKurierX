@@ -172,4 +172,4 @@ git add -A && git commit -m "fix: wkagent" && git push
 Эти файлы нельзя коммитить (уже в .gitignore):
 	∙	secrets.env
 	∙	workspace/
-	∙	
+	∙	logs/
