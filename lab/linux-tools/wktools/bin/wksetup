@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+CMD="${1:-help}"
+case "$CMD" in
+  help)
+    echo "wksetup commands:"
+    echo "  wksetup install   - install wktools into /opt/wktools"
+    echo "  wksetup key       - edit /opt/wktools/conf/secrets.env"
+    echo "  wksetup status    - show toolchain status"
+    ;;
+  install)
+    bash "$(dirname "$0")/../scripts/install.sh"
+    ;;
+  key)
+    sudo nano /opt/wktools/conf/secrets.env
+    sudo chmod 600 /opt/wktools/conf/secrets.env
+    echo "OK. Ключ сохранён."
+    ;;
+  status)
+    echo "== wktools status =="
+    command -v codex   >/dev/null && codex --version   || echo "Codex:   NOT FOUND"
+    command -v node    >/dev/null && node --version    || echo "Node:    NOT FOUND"
+    command -v npm     >/dev/null && npm --version     || echo "npm:     NOT FOUND"
+    command -v python3 >/dev/null && python3 --version || echo "Python3: NOT FOUND"
+    echo ""
+    echo "/opt/wktools:"
+    ls -la /opt/wktools 2>/dev/null || echo "  не установлено"
+    ;;
+  *)
+    echo "Неизвестная команда: $CMD"
+    echo "Запусти: wksetup help"
+    exit 1
+    ;;
+esac
