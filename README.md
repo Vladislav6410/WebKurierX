@@ -8,25 +8,25 @@
 
 
 
-lab/lab/linux-tools/wktools/
-├── bin/
-│   ├── wk                        # главный инструмент (запуск Codex)
-│   ├── wkagent                   # AI-инженер (check / fix)
-│   ├── wkdoc                     # документация
-│   ├── wksetup                   # настройка
-│   └── wkapply                   # применить фикс из workspace
-├── conf/
-│   ├── wkagent.json              # конфиг агента
-│   └── secrets.env.example       # шаблон ключей (НЕ хранить ключи в git!)
-├── lib/
-│   ├── wk.py                     # ядро wk
-│   ├── wkagent.py                # ядро агента
-│   └── wkapply.py                # применение workspace → репо
-├── scripts/
-│   ├── bootstrap_wkagent.sh      # первичная установка
-│   └── install.sh                # переустановка
-└── dashboard/
-    └── WKAgentDashboard.jsx      # веб-дашборд (React)
+ lab/lab/linux-tools/wktools/
+ ├── bin/
+ │   ├── wk                        # главный инструмент (запуск Codex)
+ │   ├── wkagent                   # AI-инженер (check / fix)
+ │   ├── wkdoc                     # документация
+ │   ├── wksetup                   # настройка
+ │   └── wkapply                   # применить фикс из workspace
+ ├── conf/
+ │   ├── wkagent.json              # конфиг агента
+ │   └── secrets.env.example       # шаблон ключей (НЕ хранить ключи в git!)
+ ├── lib/
+ │   ├── wk.py                     # ядро wk
+ │   ├── wkagent.py                # ядро агента
+ │   └── wkapply.py                # применение workspace → репо
+ ├── scripts/
+ │   ├── bootstrap_wkagent.sh      # первичная установка
+ │   └── install.sh                # переустановка
+ └── dashboard/
+ └── WKAgentDashboard.jsx      # веб-дашборд (React)
 
 
 
