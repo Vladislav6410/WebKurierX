@@ -6,6 +6,7 @@ Loads API key from secrets.env and calls Codex CLI.
 Usage:
   wk "напиши функцию hello world на Python"
   wk --doc "объясни как работает bootstrap.sh"
+  wk --token-test
 """
 import argparse
 import os
@@ -64,18 +65,13 @@ def main():
     env["OPENAI_API_KEY"] = key
     env["CODEX_API_KEY"] = key
 
-    check = subprocess.run("command -v codex", shell=True, capture_output=True)
+    check = subprocess.run(
+        "command -v codex", shell=True, capture_output=True
+    )
     if check.returncode != 0:
         print("❌ Codex CLI не найден")
         print("   Установи: sudo npm install -g @openai/codex")
         sys.exit(2)
 
-    print(f"▶ wk → Codex: {prompt_text[:80]}{'...' if len(prompt_text) > 80 else ''}")
-    print()
+    print(f"▶ wk → Codex: {prompt_text[:80]}{'​​​​​​​​​​​​​​​​
 
-    result = subprocess.run(["codex", "exec", prompt_text], env=env, text=True)
-    sys.exit(result.returncode)
-
-
-if __name__ == "__main__":
-    main()
